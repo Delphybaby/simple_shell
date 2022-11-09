@@ -153,7 +153,7 @@ char *read_input(void)
  */
 void prompt(void)
 {
-	char *prompt = {"{^_^} "};
+	char *prompt = {"$ "};
 	char *buffer = getcwd(NULL, 0);
 
 	if (isatty(STDIN_FILENO))
