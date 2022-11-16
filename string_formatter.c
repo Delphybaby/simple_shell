@@ -1,142 +1,105 @@
 #include "shell.h"
 
 /**
- *str_concat - back a pointer to array
- *@s1: Array one
- *@s2: Array two
- *Return: Always an array dinamic
- */
-
-char *str_concat(char *s1, char *s2)
+* _strcmp - compares two strings
+* @s1: compared to s2;
+* @s2: compared to s1;
+*
+* Return: returns difference between strings
+*/
+int _strcmp(char *s1, char *s2)
 {
-	char *dst;
-	unsigned int i, j, size;
+	int i = 0, output;
 
-	/*If the array is empty*/
-	if (s1 == NULL)
-		s1 = "";
-
-	if (s2 == NULL)
-		s2 = "";
-
-	/*count size total*/
-	size = (_strlen(s1) + _strlen(s2) + 1);
-
-	dst = (char *) malloc(size * sizeof(char));
-
-	if (dst == 0)
-	{
-		return (NULL);
-	}
-
-	/*Concatenate arrays*/
-	for (i = 0; *(s1 + i) != '\0'; i++)
-		*(dst + i) = *(s1 + i);
-
-	for (j = 0; *(s2 + j) != '\0'; j++)
-	{
-		*(dst + i) = *(s2 + j);
+	while (*(s1 + i) == *(s2 + i) && *(s1 + i) != '\0')
 		i++;
-	}
-	dst[i] = '\0';
 
-	return (dst);
+	output = (*(s1 + i) - *(s2 + i));
+
+	return (output);
 }
+
 /**
- * _itoa - integer to ascii
- * @num: num
- * @base: base
- * Return: char
- * Reference: https://gist.github.com/narnat/95733cd0ad7bfac0d90697292914c407
- *
- */
-char *_itoa(int num, int base)
+* _strlen - returns the length of a string
+* @s: string passed
+*
+* Return: returns length of string passed
+*/
+int _strlen(char *s)
 {
-	static char *array = "0123456789abcdef";
-	static char buffer[50];
-	char sign = 0;
-	char *ptr;
-	unsigned long n = num;
+	int count = 0;
 
-	if (num < 0)
+	while (*s != '\0')
 	{
-		n = -num;
-		sign = '-';
+		count++;
+		s++;
 	}
-	ptr = &buffer[49];
-	*ptr = '\0';
+	return (count);
+}
 
-	do      {
-		*--ptr = array[n % base];
-		n /= base;
-	} while (n != 0);
+/**
+* _strncmp - compares two strings up to n bytes
+* @s1: compared to s2
+* @s2: compared to s1
+* @n: number of bytes
+*
+* Return: difference between s1 and s2
+*/
+int _strncmp(char *s1, char *s2, int n)
+{
+	int i;
 
-	if (sign)
-		*--ptr = sign;
+	for (i = 0; s1[i] && s2[i] && i < n; i++)
+	{
+		if (s1[i] != s2[i])
+			return (s1[i] - s2[i]);
+	}
+	return (0);
+}
+
+/**
+* _strdup - dupicates string
+* @s: to be duplicated
+*
+* Return: pointer to duplicate string
+*/
+char *_strdup(char *s)
+{
+	char *ptr;
+	int i, len;
+
+	if (s == NULL)
+		return (NULL);
+
+	len = _strlen(s);
+
+	ptr = malloc(sizeof(char) * (len + 1));
+	if (!ptr)
+		return (NULL);
+	for (i = 0; *s != '\0'; s++, i++)
+		ptr[i] = s[0];
+
+	ptr[i++] = '\0';
 	return (ptr);
 }
 
 /**
- * _strcmp - compare two strings
- * @s1: string one
- * @s2: string two
- * Return: returns an integer less  than,  equal  to,  or
- * greater  than zero if s1 is found, respectively, to be
- * less than, to match, or be greater than s2.
- */
-int _strcmp(char *s1, char *s2)
+* _strchr - locates a character in a string
+* @s: string to be checked
+* @c: character to be located
+*
+* Return: returns pointer to first occurence of character
+* or NULL if character not found
+*/
+char *_strchr(char *s, char c)
 {
-	char *p1 = s1;
-	char *p2 = s2;
-
-	while (*p1 != '\0' && *p2 != '\0' && *p1 == *p2)
+	while (*s)
 	{
-		p1++;
-		p2++;
+		if (*s == c)
+			return (s);
+		s++;
 	}
-	return (*p1 - *p2);
-}
-
-/**
- * sparse_str - devides a string into and array of strings
- * @line: the string to be separated
- * @env: environment variable
- * Return: tokens(array of strings) on succes or EXIT_FAILURE if fails
- */
-char **sparse_str(char *line, char **env)
-{
-	int bufsize = TOK_BUFSIZE, posicion = 0;
-	char **tokens;
-	char *token;
-
-	if (line == NULL)
-	{
-		return (0);
-	}
-	tokens = _calloc(sizeof(char *), bufsize);
-	if (!tokens)
-	{
-		perror("error");
-		exit(EXIT_FAILURE);
-	}
-	token = strtok(line, TOK_DELIM);
-	while (token != NULL)
-	{
-		tokens[posicion] = token;
-		posicion++;
-		token = strtok(NULL, TOK_DELIM);
-	}
-	if (tokens[0] == NULL)
-		tokens[posicion] = "\n";
-
-	if ((_strcmp(tokens[0], "exit") == 0) && tokens[1] == NULL)
-	{
-		free(line);
-		free(tokens);
-		exit(0);
-	}
-	if ((_strcmp(tokens[0], "env") == 0) && tokens[1] == NULL)
-		func_printenv(env);
-
-	return (tokens);
+	if (!c)
+		return (s);
+	return (NULL);
 }
